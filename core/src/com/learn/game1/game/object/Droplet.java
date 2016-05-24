@@ -19,7 +19,7 @@ public class Droplet extends AbstractObject{
     private void init() {
         region = Assets.instance.droplet.droplet;
 
-        position.x = MathUtils.random(0, 800 - 64);
+        position.x = MathUtils.random(0, Gdx.graphics.getWidth() - 64);
         position.y = Gdx.graphics.getHeight();
 
         dimension.set(64f, 64f);

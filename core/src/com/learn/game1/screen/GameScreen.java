@@ -15,17 +15,22 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.learn.game1.MyLearnGame;
 import com.learn.game1.game.Assets;
 import com.learn.game1.game.object.Bucket;
 import com.learn.game1.game.object.Droplet;
+import com.learn.game1.util.Constants;
 
 /**
  * Created by User on 5/11/2016.
  */
 
 public class GameScreen implements Screen {
-    public static final int MAX_DROPS = 500;
+    public static final int MAX_DROPS = 5000;
     final MyLearnGame game;
 
     Bucket bucket;
@@ -36,6 +41,7 @@ public class GameScreen implements Screen {
     Array<Droplet> raindrops;
     long lastDropTime;
     int dropsGathered, countDrops = MAX_DROPS;
+    private Viewport viewport;
 
     public GameScreen(final MyLearnGame gam) {
         this.game = gam;
@@ -46,14 +52,13 @@ public class GameScreen implements Screen {
         rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        viewport = new ScreenViewport(camera);
+        viewport.apply();
 
-        // create a Rectangle to logically represent the bucket
         bucket = new Bucket();
-        bucket.position.x = 800 / 2 - 64 / 2; // center the bucket horizontally
-        bucket.position.y = 20; // bottom left corner of the bucket is 20 pixels above
-
 
         // create the raindrops array and spawn the first raindrop
         raindrops = new Array<Droplet>();
@@ -77,14 +82,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 100/camera.viewportWidth);
         // tell the camera to update its matrices.
         camera.update();
-
-        bucket.update(delta);
-
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
+
+        bucket.update(delta);
 
         // begin a new batch and draw the bucket and
         // all drops
@@ -121,8 +126,8 @@ public class GameScreen implements Screen {
         // make sure the bucket stays within the screen bounds
         if (bucket.position.x < 0)
             bucket.position.x = 0;
-        if (bucket.position.x > 800 - 64)
-            bucket.position.x = 800 - 64;
+        if (bucket.position.x > viewport.getWorldWidth() - 64)
+            bucket.position.x = viewport.getWorldWidth() - 64;
 
         // check if we need to create a new raindrop
         //if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
@@ -154,6 +159,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        //camera.viewportWidth = 30f;
+        //camera.viewportHeight = 30f * height/width;
+        viewport.update(width, height, false);
+        camera.position.set(viewport.getWorldWidth()/ 2f, viewport.getWorldHeight() / 2f, 0);
     }
 
     @Override

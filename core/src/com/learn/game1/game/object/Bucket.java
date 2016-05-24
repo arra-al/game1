@@ -1,5 +1,6 @@
 package com.learn.game1.game.object;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.learn.game1.game.Assets;
@@ -15,6 +16,10 @@ public class Bucket extends AbstractObject {
     }
     private void init() {
         region = Assets.instance.bucket.bucket;
+        //set bucket position
+        float posX = Gdx.graphics.getWidth() / 2 - 64 / 2; //center the bucket horizontally
+        float posY = 20; // bottom left corner of the bucket is 20 pixels above
+        position.set(posX, posY);
 
         dimension.set(64f, 64f);
         //Center image on game object;
