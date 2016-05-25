@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.learn.game1.MyLearnGame;
@@ -22,19 +23,57 @@ public class WorldController extends InputAdapter implements Disposable{
     private final Rectangle r1 = new Rectangle();
     private final Rectangle r2 = new Rectangle();
 
+    public Level level;
+
     public WorldController(MyLearnGame game) {
         this.game = game;
+        Gdx.input.setInputProcessor(this);
         init();
     }
 
-    private void init() {}
-
-    public void update(float delta) {
+    private void init() {
+        level = new Level(1);
 
     }
 
-    private void handleInputGame(float delta) {
+    public void update(float delta) {
+        handleInputGame(delta);
+        level.update(delta);
+    }
 
+    private void handleInputGame(float delta) {
+        // process user input
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            if(touchPos.x > level.bucket.position.x) {
+                level.bucket.velocity.x = 1000;
+                level.bucket.terminalVelocity.x = 200;
+            }
+            else {
+                level.bucket.velocity.x = -1000;
+                level.bucket.terminalVelocity.x = -1800;
+            }
+            level.bucket.terminalVelocity.x = 500;
+            //level.bucket.acceleration.x = 100;
+
+            //level.bucket.position.x = touchPos.x - 64 / 2;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            level.bucket.velocity.x = 0;
+            level.bucket.position.x -= 200 * delta;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            level.bucket.velocity.x = 0;
+            level.bucket.position.x += 200 * delta;
+        }
+
+
+        // make sure the bucket stays within the screen bounds
+        if (level.bucket.position.x < 0)
+            level.bucket.position.x = 0;
+        if (level.bucket.position.x > Gdx.graphics.getWidth() - 64)
+            level.bucket.position.x = Gdx.graphics.getWidth() - 64;
     }
 
     @Override
