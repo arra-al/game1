@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.learn.game1.game.object.Bucket;
 import com.learn.game1.game.object.Droplet;
 
@@ -23,6 +24,8 @@ public class Level {
     //bucket
     public Bucket bucket;
 
+    private long lastDropTime;
+
     public Level(int level) {
         initLevel();
     }
@@ -41,6 +44,7 @@ public class Level {
     private void spawDroplet() {
         Droplet droplet = new Droplet();
         raindrops.add(droplet);
+        lastDropTime = TimeUtils.nanoTime();
     }
 
     public void update(float delta) {
@@ -51,7 +55,8 @@ public class Level {
             d.update(delta);
         }
 
-        spawDroplet();
+        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+            spawDroplet();
 
         Iterator<Droplet> iter = raindrops.iterator();
         while (iter.hasNext()) {
@@ -76,5 +81,10 @@ public class Level {
                 raindrops) {
             d.render(batch);
         }
+    }
+
+    public void dispose() {
+        dropSound.dispose();
+        rainMusic.dispose();
     }
 }

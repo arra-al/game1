@@ -61,6 +61,7 @@ public class WorldRender implements Disposable {
 
     @Override
     public void dispose() {
+        worldController.dispose();
         b2debugRenderer.dispose();
         batch.dispose();
     }

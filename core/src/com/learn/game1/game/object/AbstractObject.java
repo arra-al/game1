@@ -49,7 +49,7 @@ public abstract class AbstractObject {
             position.set(body.getPosition());
             rotation = body.getAngle() * MathUtils.radiansToDegrees;
         }
-
+        bounds.set(position.x, position.y, dimension.x, dimension.y);
     }
 
     protected void updateMotionX(float deltaTime) {

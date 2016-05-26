@@ -33,7 +33,6 @@ public class WorldController extends InputAdapter implements Disposable{
 
     private void init() {
         level = new Level(1);
-
     }
 
     public void update(float delta) {
@@ -46,16 +45,8 @@ public class WorldController extends InputAdapter implements Disposable{
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            if(touchPos.x > level.bucket.position.x) {
-                level.bucket.velocity.x = 1000;
-                level.bucket.terminalVelocity.x = 200;
-            }
-            else {
-                level.bucket.velocity.x = -1000;
-                level.bucket.terminalVelocity.x = -1800;
-            }
-            level.bucket.terminalVelocity.x = 500;
-            //level.bucket.acceleration.x = 100;
+
+            level.bucket.moveTo(touchPos);
 
             //level.bucket.position.x = touchPos.x - 64 / 2;
         }
@@ -78,7 +69,7 @@ public class WorldController extends InputAdapter implements Disposable{
 
     @Override
     public void dispose() {
-
+        level.dispose();
     }
 
     @Override
