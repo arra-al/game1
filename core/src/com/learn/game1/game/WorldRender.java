@@ -1,5 +1,6 @@
 package com.learn.game1.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -52,6 +53,11 @@ public class WorldRender implements Disposable {
 
 
     private void renderGUI(SpriteBatch batch) {
+        batch.begin();
+        {
+            Assets.instance.fonts.defaultNormal.draw(batch, "Drops gathered: " + worldController.dropletsGathered, 10, Gdx.graphics.getHeight() - 10);
+        }
+        batch.end();
     }
 
     public void resize(int width, int height) {
