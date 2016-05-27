@@ -29,9 +29,15 @@ public class Droplet extends AbstractObject{
         bounds.set(position.x, position.y, dimension.x, dimension.y);
 
         // Set physics values
-        terminalVelocity.set(3.0f, 4.0f);
-        friction.set(12.0f, 0.0f);
-        acceleration.set(0.0f, -25.0f);
+        velocity.set(0f, -MathUtils.random(100, 500));
+        terminalVelocity.set(0f, 600.0f);
+        friction.set(0.0f, 0.0f);
+        acceleration.set(0.0f, -9.81f);
+    }
+
+    @Override
+    public void update(float delta) {
+        super.update(delta);
     }
 
     @Override

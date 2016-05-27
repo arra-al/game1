@@ -61,7 +61,7 @@ public class Level {
         Iterator<Droplet> iter = raindrops.iterator();
         while (iter.hasNext()) {
             Droplet raindrop = iter.next();
-            raindrop.position.y -= 400 * delta;
+            raindrop.update(delta);
             if (raindrop.position.y + 64 < 0) {
                 iter.remove();
                 continue;

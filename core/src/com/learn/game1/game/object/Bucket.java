@@ -41,13 +41,14 @@ public class Bucket extends AbstractObject {
         bounds.set(position.x, position.y, dimension.x, dimension.y);
 
         // Set physics values
-        terminalVelocity.set(3.0f, 0.0f);
-        friction.set(12.0f, 0.0f);
+        terminalVelocity.set(5000.0f, 0.0f);
+        friction.set(0f, 0.0f);
         acceleration.set(0.0f, 0.0f);
     }
 
     public void moveTo(Vector3 point) {
         this.moveToPoint = point;
+        this.moveToPoint.x = this.moveToPoint.x - 32; //subs 32 to center the bucket
         if(point.x > position.x) {
             velocity.x = 1000;
             bucketStatus = STATUS.MOVE_RIGHT;
@@ -58,15 +59,16 @@ public class Bucket extends AbstractObject {
         } else {
             velocity.x = 0;
         }
-        terminalVelocity.x = 500;
     }
 
     @Override
     public void update(float delta) {
         if(moveToPoint.x >= position.x && bucketStatus.equals(STATUS.MOVE_LEFT)) {
             velocity.x = 0;
+            bucketStatus = STATUS.IDLE;
         } else if(moveToPoint.x <= position.x && bucketStatus.equals(STATUS.MOVE_RIGHT)) {
             velocity.x = 0;
+            bucketStatus = STATUS.IDLE;
         } else if(bucketStatus.equals(STATUS.IDLE) && velocity.x != 0) {
             velocity.x = 0;
         }
