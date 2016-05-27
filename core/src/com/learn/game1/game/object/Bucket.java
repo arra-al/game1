@@ -47,8 +47,11 @@ public class Bucket extends AbstractObject {
     }
 
     public void moveTo(Vector3 point) {
+        if(point.x == (moveToPoint.x + dimension.x/2)) {
+            return;
+        }
         this.moveToPoint = point;
-        this.moveToPoint.x = this.moveToPoint.x - 32; //subs 32 to center the bucket
+        this.moveToPoint.x = this.moveToPoint.x - dimension.x/2; //subs to center the bucket
         if(point.x > position.x) {
             velocity.x = 1000;
             bucketStatus = STATUS.MOVE_RIGHT;

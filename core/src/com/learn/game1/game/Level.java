@@ -16,8 +16,6 @@ import java.util.Iterator;
 public class Level {
     public static final String TAG = Level.class.getName();
 
-    private Sound dropSound;
-    private Music rainMusic;
     //list of raindrops
     public Array<Droplet> raindrops;
 
@@ -31,12 +29,6 @@ public class Level {
     }
 
     private void initLevel() {
-        dropSound = Assets.instance.sounds.drop;
-
-        rainMusic = Assets.instance.music.rain;
-        rainMusic.setLooping(true);
-        rainMusic.play();
-
         bucket = new Bucket();
         raindrops = new Array<Droplet>();
     }
@@ -54,24 +46,10 @@ public class Level {
               raindrops) {
             d.update(delta);
         }
-
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
             spawDroplet();
 
-        Iterator<Droplet> iter = raindrops.iterator();
-        while (iter.hasNext()) {
-            Droplet raindrop = iter.next();
-            raindrop.update(delta);
-            if (raindrop.position.y + 64 < 0) {
-                iter.remove();
-                continue;
-            }
-            if (raindrop.bounds.overlaps(bucket.bounds)) {
-                dropSound.play();
-                iter.remove();
-                continue;
-            }
-        }
+
     }
 
     public void render(SpriteBatch batch) {
@@ -83,8 +61,5 @@ public class Level {
         }
     }
 
-    public void dispose() {
-        dropSound.dispose();
-        rainMusic.dispose();
-    }
+    public void dispose() {}
 }

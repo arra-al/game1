@@ -3,12 +3,17 @@ package com.learn.game1.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.learn.game1.MyLearnGame;
+import com.learn.game1.game.object.Droplet;
 import com.learn.game1.screen.MainMenuScreen;
+
+import java.util.Iterator;
 
 /**
  * Created by User on 5/16/2016.
@@ -17,11 +22,15 @@ public class WorldController extends InputAdapter implements Disposable{
     private static final String TAG = WorldController.class.getName();
     private final MyLearnGame game;
 
+
+
+    private Sound dropSound;
+    private Music rainMusic;
+
     public World b2world;
 
-    // Rectangles for collision detection
-    private final Rectangle r1 = new Rectangle();
-    private final Rectangle r2 = new Rectangle();
+    public static int MAX_DROPLETS = 50;
+    public int dropletsGathered = 0;
 
     public Level level;
 
@@ -32,13 +41,36 @@ public class WorldController extends InputAdapter implements Disposable{
     }
 
     private void init() {
+        dropSound = Assets.instance.sounds.drop;
+
+        rainMusic = Assets.instance.music.rain;
+        rainMusic.setLooping(true);
+        rainMusic.play();
+
         level = new Level(1);
     }
 
     public void update(float delta) {
         handleInputGame(delta);
         level.update(delta);
+
+        Iterator<Droplet> iter = level.raindrops.iterator();
+        while (iter.hasNext()) {
+            Droplet raindrop = iter.next();
+            raindrop.update(delta);
+            if (raindrop.position.y + 64 < 0) {
+                iter.remove();
+                continue;
+            }
+            if (raindrop.bounds.overlaps(level.bucket.bounds)) {
+                dropSound.play();
+                dropletsGathered++;
+                iter.remove();
+                continue;
+            }
+        }
     }
+
 
     private void handleInputGame(float delta) {
         // process user input
@@ -69,6 +101,9 @@ public class WorldController extends InputAdapter implements Disposable{
 
     @Override
     public void dispose() {
+        dropSound.dispose();
+        rainMusic.dispose();
+
         level.dispose();
     }
 
